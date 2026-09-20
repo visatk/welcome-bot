@@ -19,7 +19,7 @@
   // (e.g. rules URL, custom templates) so they can be edited without a
   // redeploy.
   "kv_namespaces": [
-    { "binding": "WELCOME_KV", "id": "<YOUR_KV_NAMESPACE_ID>" }
+    { "binding": "WELCOME_KV", "id": "e7ca05a9fe314d43b8bae54c20ec4490" }
   ],
 
   // Queue: decouples "send the ephemeral welcome" from "delete it later".
@@ -27,15 +27,15 @@
   // consumer calls deleteEphemeralMessage() when it's due.
   "queues": {
     "producers": [
-      { "queue": "welcome-bot-auto-delete", "binding": "AUTO_DELETE_QUEUE" }
+      { "queue": "my-queue", "binding": "AUTO_DELETE_QUEUE" }
     ],
     "consumers": [
       {
-        "queue": "welcome-bot-auto-delete",
+        "queue": "my-queue",
         "max_batch_size": 10,
         "max_batch_timeout": 5,
         "max_retries": 3,
-        "dead_letter_queue": "welcome-bot-auto-delete-dlq"
+        "dead_letter_queue": "my-queue-dlq"
       }
     ]
   },
