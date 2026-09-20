@@ -1,0 +1,48 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "telegram-welcome-bot",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-09-20",
+  "compatibility_flags": ["nodejs_compat"],
+
+  // Non-secret config. Secrets (BOT_TOKEN, WEBHOOK_SECRET) are set with
+  // `wrangler secret put BOT_TOKEN` / `wrangler secret put WEBHOOK_SECRET`
+  // and must never be written here.
+  "vars": {
+    "TELEGRAM_API_ROOT": "https://api.telegram.org",
+    // How long (seconds) an ephemeral welcome message stays visible
+    // before the bot explicitly deletes it. 0 disables auto-delete.
+    "WELCOME_AUTO_DELETE_SECONDS": "45"
+  },
+
+  // KV: stores the pool of welcome message variants + per-chat settings
+  // (e.g. rules URL, custom templates) so they can be edited without a
+  // redeploy.
+  "kv_namespaces": [
+    { "binding": "WELCOME_KV", "id": "<YOUR_KV_NAMESPACE_ID>" }
+  ],
+
+  // Queue: decouples "send the ephemeral welcome" from "delete it later".
+  // A delayed message is enqueued right after sendMessage() and the
+  // consumer calls deleteEphemeralMessage() when it's due.
+  "queues": {
+    "producers": [
+      { "queue": "welcome-bot-auto-delete", "binding": "AUTO_DELETE_QUEUE" }
+    ],
+    "consumers": [
+      {
+        "queue": "welcome-bot-auto-delete",
+        "max_batch_size": 10,
+        "max_batch_timeout": 5,
+        "max_retries": 3,
+        "dead_letter_queue": "welcome-bot-auto-delete-dlq"
+      }
+    ]
+  },
+
+  "observability": {
+    "enabled": true,
+    "logs": { "enabled": true, "head_sampling_rate": 1 },
+    "traces": { "enabled": true, "head_sampling_rate": 0.05 }
+  }
+}

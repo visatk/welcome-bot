@@ -1,0 +1,19 @@
+{
+  "name": "telegram-welcome-bot",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Telegram Welcome Bot on Cloudflare Workers using Ephemeral Messages, Rich Messages, and auto-delete scheduling.",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "tail": "wrangler tail",
+    "types": "wrangler types",
+    "set:webhook": "node scripts/set-webhook.mjs",
+    "register:commands": "node scripts/register-commands.mjs"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3",
+    "wrangler": "^3.90.0"
+  }
+}
