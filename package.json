@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "wrangler dev",
-    "deploy": "npm run set:webhook && wrangler deploy",
+    "deploy": "npm run types && wrangler deploy",
     "tail": "wrangler tail",
     "types": "wrangler types",
     "set:webhook": "node scripts/set-webhook.mjs",
